@@ -3,6 +3,7 @@ package app
 import (
 	"account-management/internal/config"
 	sl "account-management/internal/lib/slog"
+	"account-management/internal/repo"
 	"account-management/pkg/psql"
 	"golang.org/x/exp/slog"
 	"os"
@@ -35,7 +36,9 @@ func Run() {
 		log.Error("failed to init storage", sl.Err(err))
 		os.Exit(1)
 	}
-	_ = storage
+	defer storage.Close()
+	repositories := repo.NewRepositories(storage)
+	_ = repositories
 
 }
 
