@@ -1,13 +1,15 @@
 package repo
 
 import (
+	"account-management/internal/entity"
 	"account-management/internal/repo/pgdb"
 	"account-management/pkg/psql"
+	"context"
 	"log"
 )
 
 type User interface {
-	//CreateUser(ctx context.Context, user entity.User) (int, error)
+	CreateUser(ctx context.Context, user entity.User) (id int64, err error)
 }
 
 type Repositories struct {

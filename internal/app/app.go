@@ -51,7 +51,7 @@ func Run() {
 		SignKey:  cfg.JWT.SignKey,
 		TokenTTL: cfg.JWT.TokenTTL,
 	}
-	_ = deps
+	services := service.NewServices(deps)
 
 }
 
