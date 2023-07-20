@@ -2,8 +2,10 @@ package app
 
 import (
 	"account-management/internal/config"
+	"account-management/internal/lib/hasher"
 	sl "account-management/internal/lib/slog"
 	"account-management/internal/repo"
+	"account-management/internal/service"
 	"account-management/pkg/psql"
 	"golang.org/x/exp/slog"
 	"os"
@@ -37,8 +39,19 @@ func Run() {
 		os.Exit(1)
 	}
 	defer storage.Close()
+
+	log.Info("Initializing repositories...")
 	repositories := repo.NewRepositories(storage)
-	_ = repositories
+
+	// Services dependencies
+	log.Info("Initializing services...")
+	deps := service.ServicesDependencies{
+		Repos:    repositories,
+		Hasher:   hasher.NewSHA1Hasher(cfg.Hasher.Salt),
+		SignKey:  cfg.JWT.SignKey,
+		TokenTTL: cfg.JWT.TokenTTL,
+	}
+	_ = deps
 
 }
 

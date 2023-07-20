@@ -15,6 +15,15 @@ type Config struct {
 	ConnectionString string `yaml:"-"`
 	Postgres         `yaml:"db"`
 	HTTPServer       `yaml:"http_server"`
+
+	Hasher struct {
+		Salt string `env-required:"true" env:"HASHER_SALT"`
+	}
+
+	JWT struct {
+		SignKey  string        `env-required:"true"                  env:"JWT_SIGN_KEY"`
+		TokenTTL time.Duration `env-required:"true" yaml:"token_ttl" env:"JWT_TOKEN_TTL"`
+	}
 }
 
 type Postgres struct {
