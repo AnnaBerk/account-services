@@ -28,7 +28,7 @@ type Config struct {
 
 type Postgres struct {
 	Host        string        `yaml:"host" env:"DB_HOST" env-required:"true"`
-	Port        int           `yaml:"port" env:"DB_PORT" env-required:"true"`
+	DBPort      int           `yaml:"port" env:"DB_PORT" env-required:"true"`
 	User        string        `env:"DB_USER" env-required:"true"`
 	Password    string        `env:"DB_PASSWORD" env-required:"true"`
 	DBName      string        `env:"DB_NAME" env-required:"true"`
@@ -42,6 +42,7 @@ type HTTPServer struct {
 	Address     string        `yaml:"address" env-default:"localhost:8080"`
 	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
+	Port        string        `yaml:"server_port" env:"PORT" env-required:"true"`
 }
 
 func MustLoad() *Config {
@@ -57,6 +58,6 @@ func MustLoad() *Config {
 		log.Fatal("cannot read config: %s", err)
 	}
 	cfg.ConnectionString = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.SSLMode)
+		cfg.Host, cfg.DBPort, cfg.User, cfg.Password, cfg.DBName, cfg.SSLMode)
 	return &cfg
 }

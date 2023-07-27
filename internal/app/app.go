@@ -2,13 +2,20 @@ package app
 
 import (
 	"account-management/internal/config"
+	v1 "account-management/internal/controller/http/v1"
 	"account-management/internal/lib/hasher"
 	sl "account-management/internal/lib/slog"
 	"account-management/internal/repo"
 	"account-management/internal/service"
+	"account-management/pkg/httpserver"
 	"account-management/pkg/psql"
+	"account-management/pkg/validator"
+	"fmt"
+	"github.com/labstack/echo/v4"
 	"golang.org/x/exp/slog"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 const (
@@ -52,6 +59,38 @@ func Run() {
 		TokenTTL: cfg.JWT.TokenTTL,
 	}
 	services := service.NewServices(deps)
+
+	// Echo handler
+	log.Info("Initializing handlers and routes...")
+	handler := echo.New()
+
+	// setup handler validator as lib validator
+	handler.Validator = validator.NewCustomValidator()
+	v1.NewRouter(handler, services, log)
+
+	// HTTP server
+	log.Info("Starting http server...")
+	log.Debug("Server port", slog.String("port", fmt.Sprint(cfg.DBPort)))
+	httpServer := httpserver.New(handler, httpserver.Port(cfg.Port))
+
+	// Waiting signal
+	log.Info("Configuring graceful shutdown...")
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	select {
+	case s := <-interrupt:
+		log.Info("app - Run - signal: " + s.String())
+	case err = <-httpServer.Notify():
+		log.Error("app - Run - httpServer.Notify: %w", sl.Err(err))
+	}
+
+	// Graceful shutdown
+	log.Info("Shutting down...")
+	err = httpServer.Shutdown()
+	if err != nil {
+		log.Error("app - Run - httpServer.Shutdown: %w", sl.Err(err))
+	}
 
 }
 

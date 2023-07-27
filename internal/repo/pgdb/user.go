@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v5/pgconn"
-	//"github.com/jackc/pgx/v5/pgconn"
 )
 
 type UserRepo struct {
@@ -38,7 +37,7 @@ func (r *UserRepo) CreateUser(ctx context.Context, user entity.User) (id int64, 
 
 	stmtSQL := `INSERT INTO "user" (name, password) VALUES($1, $2) RETURNING id `
 
-	err = r.db.Pool.QueryRow(ctx, stmtSQL, user).Scan(&id)
+	err = r.db.Pool.QueryRow(ctx, stmtSQL, user.Username, user.Password).Scan(&id)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if ok := errors.As(err, &pgErr); ok {
