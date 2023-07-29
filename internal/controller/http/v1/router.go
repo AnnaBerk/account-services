@@ -16,6 +16,11 @@ func NewRouter(handler *echo.Echo, services *service.Services, log *slog.Logger)
 		newAuthRoutes(auth, services.Auth, log)
 	}
 
-	//authMiddleware := &AuthMiddleware{services.Auth}
+	authMiddleware := &AuthMiddleware{services.Auth}
+
+	v1 := handler.Group("/api/v1", authMiddleware.UserIdentity)
+	{
+
+	}
 
 }

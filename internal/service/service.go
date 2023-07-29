@@ -15,6 +15,7 @@ type AuthCreateUserInput struct {
 
 type Auth interface {
 	CreateUser(ctx context.Context, input AuthCreateUserInput, log *slog.Logger) (id int64, err error)
+	ParseToken(accessToken string) (int, error)
 }
 
 type ServicesDependencies struct {
