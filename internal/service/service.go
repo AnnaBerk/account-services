@@ -27,11 +27,17 @@ type ServicesDependencies struct {
 }
 
 type Services struct {
-	Auth Auth
+	Auth    Auth
+	Account Account
+}
+
+type Account interface {
+	CreateAccount(ctx context.Context) (int, error)
 }
 
 func NewServices(deps ServicesDependencies) *Services {
 	return &Services{
-		Auth: NewAuthService(deps.Repos.User, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		Auth:    NewAuthService(deps.Repos.User, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		Account: NewAccountService(deps.Repos.Account),
 	}
 }
