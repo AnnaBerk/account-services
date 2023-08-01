@@ -8,11 +8,10 @@ import (
 )
 
 type User interface {
-	CreateUser(ctx context.Context, user entity.User) (id int64, err error)
+	CreateUserWithAccount(ctx context.Context, user entity.User) (id int64, err error)
 }
 
 type Account interface {
-	CreateAccount(ctx context.Context) (int, error)
 }
 
 type Repositories struct {

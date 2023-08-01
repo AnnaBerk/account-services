@@ -20,7 +20,7 @@ func NewRouter(handler *echo.Echo, services *service.Services, log *slog.Logger)
 
 	v1 := handler.Group("/api/v1", authMiddleware.UserIdentity)
 	{
-
+		newAccountRoutes(v1.Group("/accounts"), services.Account)
 	}
 
 }

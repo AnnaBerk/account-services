@@ -37,7 +37,7 @@ type Account interface {
 
 func NewServices(deps ServicesDependencies) *Services {
 	return &Services{
-		Auth:    NewAuthService(deps.Repos.User, deps.Hasher, deps.SignKey, deps.TokenTTL),
-		Account: NewAccountService(deps.Repos.Account),
+		Auth: NewAuthService(deps.Repos.User, deps.Hasher, deps.SignKey, deps.TokenTTL),
+		//Account: NewAccountService(deps.Repos.Account),
 	}
 }

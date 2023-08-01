@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS "user" (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    account_id int NOT NULL REFERENCES account (id),
+    account_id int NOT NULL REFERENCES account (id) ON DELETE CASCADE,
     created  date NOT NULL DEFAULT CURRENT_DATE
     );
