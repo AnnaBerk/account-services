@@ -1,8 +1,13 @@
 package pgdb
 
 import (
+	"account-management/internal/entity"
+	"account-management/internal/repo/repoerrs"
 	"account-management/pkg/psql"
 	"context"
+	"errors"
+	"fmt"
+	"github.com/jackc/pgx/v5"
 )
 
 type AccountRepo struct {
@@ -13,27 +18,24 @@ func NewAccountRepo(pg *psql.Postgres) *UserRepo {
 	return &UserRepo{db: pg}
 }
 
-func (r *AccountRepo) CreateAccount(ctx context.Context) (int, error) {
+func (r *AccountRepo) GetAccountById(ctx context.Context, id int) (account entity.Account, err error) {
 
-	//stmtSQL := `INSERT INTO account (name, password) VALUES($1, $2) RETURNING id `
-	//sql, args, _ := r.Builder.
-	//	Insert("accounts").
-	//	Values(squirrel.Expr("DEFAULT")).
-	//	Suffix("RETURNING id").
-	//	ToSql()
-	//
-	//var id int
-	//err := r.Pool.QueryRow(ctx, sql, args...).Scan(&id)
-	//if err != nil {
-	//	log.Debugf("err: %v", err)
-	//	var pgErr *pgconn.PgError
-	//	if ok := errors.As(err, &pgErr); ok {
-	//		if pgErr.Code == "23505" {
-	//			return 0, repoerrs.ErrAlreadyExists
-	//		}
-	//	}
-	//	return 0, fmt.Errorf("AccountRepo.CreateAccount - r.Pool.QueryRow: %v", err)
-	//}
-	//
-	return 0, nil
+	stmtSQL := `SELECT id, balance, created
+				FROM account
+				JOIN "user" ON account.id = "user".account_id
+				WHERE "user".id = $1`
+
+	err = r.db.Pool.QueryRow(ctx, stmtSQL, id).Scan(
+		&account.Id,
+		&account.Balance,
+		&account.CreatedAt,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return entity.Account{}, repoerrs.ErrNotFound
+		}
+		return entity.Account{}, fmt.Errorf("AccountRepo.GetAccountById - r.Pool.QueryRow: %v", err)
+	}
+
+	return account, nil
 }

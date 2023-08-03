@@ -36,13 +36,13 @@ func NewAuthService(userRepo repo.User, passwordHasher hasher.PasswordHasher, si
 	}
 }
 
-func (s *AuthService) CreateUser(ctx context.Context, input AuthCreateUserInput, log *slog.Logger) (id int64, err error) {
+func (s *AuthService) CreateUserWithAccount(ctx context.Context, input entity.AuthCreateUserInput, log *slog.Logger) (id int64, err error) {
 	user := entity.User{
 		Username: input.Username,
 		Password: s.passwordHasher.Hash(input.Password),
 	}
 
-	userId, err := s.userRepo.CreateUser(ctx, user)
+	userId, err := s.userRepo.CreateUserWithAccount(ctx, user)
 	if err != nil {
 		if errors.Is(err, repoerrs.ErrAlreadyExists) {
 			return 0, ErrUserAlreadyExists
