@@ -15,6 +15,7 @@ type Auth interface {
 }
 
 type Account interface {
+	Deposit(ctx context.Context, input entity.AccountDepositInput, log *slog.Logger) error
 }
 
 type Services struct {

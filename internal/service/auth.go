@@ -47,7 +47,7 @@ func (s *AuthService) CreateUserWithAccount(ctx context.Context, input entity.Au
 		if errors.Is(err, repoerrs.ErrAlreadyExists) {
 			return 0, ErrUserAlreadyExists
 		}
-		log.Error("AuthService.CreateUser - c.userRepo.CreateUser: %v", sl.Err(err))
+		log.Error("AuthService.CreateUser - c.userRepo.CreateUser: %w", sl.Err(err))
 		return 0, ErrCannotCreateUser
 	}
 	return userId, nil

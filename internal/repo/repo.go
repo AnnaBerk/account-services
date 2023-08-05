@@ -12,6 +12,8 @@ type User interface {
 }
 
 type Account interface {
+	GetAccountById(ctx context.Context, id int) (account entity.Account, err error)
+	Deposit(ctx context.Context, id int, amount int) (err error)
 }
 
 type Repositories struct {

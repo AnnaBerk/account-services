@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"account-management/internal/entity"
 	"account-management/internal/service"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/exp/slog"
@@ -39,7 +40,7 @@ func (r *authRoutes) signUp(c echo.Context) error {
 		return err
 	}
 
-	id, err := r.authService.CreateUser(c.Request().Context(), service.AuthCreateUserInput{
+	id, err := r.authService.CreateUserWithAccount(c.Request().Context(), entity.AuthCreateUserInput{
 		Username: input.Username,
 		Password: input.Password,
 	}, r.log)
