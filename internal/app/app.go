@@ -58,7 +58,7 @@ func Run() {
 		SignKey:  cfg.JWT.SignKey,
 		TokenTTL: cfg.JWT.TokenTTL,
 	}
-	services := service.NewServices(deps)
+	services := service.NewServices(deps, log)
 
 	// Echo handler
 	log.Info("Initializing handlers and routes...")

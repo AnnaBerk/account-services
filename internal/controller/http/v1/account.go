@@ -42,7 +42,7 @@ func (r *accountRoutes) deposit(c echo.Context) error {
 	err := r.accountService.Deposit(c.Request().Context(), entity.AccountDepositInput{
 		Id:     input.Id,
 		Amount: input.Amount,
-	}, r.log)
+	})
 	if err != nil {
 		if err == service.ErrAccountNotFound {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())

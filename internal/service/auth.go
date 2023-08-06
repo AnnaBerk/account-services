@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/gommon/log"
 	"golang.org/x/exp/slog"
 	"time"
 )
@@ -27,16 +28,17 @@ type AuthService struct {
 	log            *slog.Logger
 }
 
-func NewAuthService(userRepo repo.User, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration) *AuthService {
+func NewAuthService(userRepo repo.User, passwordHasher hasher.PasswordHasher, signKey string, tokenTTL time.Duration, log *slog.Logger) *AuthService {
 	return &AuthService{
 		userRepo:       userRepo,
 		passwordHasher: passwordHasher,
 		signKey:        signKey,
 		tokenTTL:       tokenTTL,
+		log:            log,
 	}
 }
 
-func (s *AuthService) CreateUserWithAccount(ctx context.Context, input entity.AuthCreateUserInput, log *slog.Logger) (id int64, err error) {
+func (s *AuthService) CreateUserWithAccount(ctx context.Context, input entity.AuthCreateUserInput) (id int64, err error) {
 	user := entity.User{
 		Username: input.Username,
 		Password: s.passwordHasher.Hash(input.Password),

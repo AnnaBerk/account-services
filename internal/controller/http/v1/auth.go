@@ -43,7 +43,7 @@ func (r *authRoutes) signUp(c echo.Context) error {
 	id, err := r.authService.CreateUserWithAccount(c.Request().Context(), entity.AuthCreateUserInput{
 		Username: input.Username,
 		Password: input.Password,
-	}, r.log)
+	})
 	if err != nil {
 		if err == service.ErrUserAlreadyExists {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())

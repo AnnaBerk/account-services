@@ -20,7 +20,7 @@ func NewAccountRepo(pg *psql.Postgres) *AccountRepo {
 
 func (r *AccountRepo) GetAccountById(ctx context.Context, id int) (account entity.Account, err error) {
 
-	stmtSQL := `SELECT account.id, account.balance, account.created
+	stmtSQL := `SELECT id, account.balance, account.created
 				FROM account
 				JOIN "user" ON account.id = "user".account_id
 				WHERE "user".id = $1`
