@@ -27,6 +27,7 @@ type signUpInput struct {
 	Password string `json:"password" validate:"required,password"`
 }
 
+//go:generate mockgen -destination=./mocks/auth_service.go -package=mocks account-management/internal/service Auth
 func (r *authRoutes) signUp(c echo.Context) error {
 	var input signUpInput
 

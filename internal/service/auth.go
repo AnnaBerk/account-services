@@ -1,16 +1,10 @@
 package service
 
 import (
-	"account-management/internal/entity"
 	"account-management/internal/lib/hasher"
-	sl "account-management/internal/lib/slog"
 	"account-management/internal/repo"
-	"account-management/internal/repo/repoerrs"
-	"context"
-	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt"
-	"github.com/labstack/gommon/log"
 	"golang.org/x/exp/slog"
 	"time"
 )
@@ -36,23 +30,6 @@ func NewAuthService(userRepo repo.User, passwordHasher hasher.PasswordHasher, si
 		tokenTTL:       tokenTTL,
 		log:            log,
 	}
-}
-
-func (s *AuthService) CreateUserWithAccount(ctx context.Context, input entity.AuthCreateUserInput) (id int64, err error) {
-	user := entity.User{
-		Username: input.Username,
-		Password: s.passwordHasher.Hash(input.Password),
-	}
-
-	userId, err := s.userRepo.CreateUserWithAccount(ctx, user)
-	if err != nil {
-		if errors.Is(err, repoerrs.ErrAlreadyExists) {
-			return 0, ErrUserAlreadyExists
-		}
-		log.Error("AuthService.CreateUser - c.userRepo.CreateUser: %w", sl.Err(err))
-		return 0, ErrCannotCreateUser
-	}
-	return userId, nil
 }
 
 func (s *AuthService) ParseToken(accessToken string) (int, error) {
